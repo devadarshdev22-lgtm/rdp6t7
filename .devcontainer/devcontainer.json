@@ -2,7 +2,7 @@
     "name": "Debian 13 Graphical KVM",
     "image": "://microsoft.com",
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:1": {
+        "ghcr.io/devcontainers/features/desktop-lite:1": {
             "installZsh": true,
             "upgradePackages": true,
             "password": "watermen"
