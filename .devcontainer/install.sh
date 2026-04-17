@@ -1,17 +1,13 @@
 #!/bin/bash
-set -e
 
-echo "📦 Installing KDE + VNC stack (stable)..."
+echo "📦 Installing XFCE + VNC stack..."
 
-export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 
+# Core desktop + VNC
 sudo apt-get install -y --no-install-recommends \
-kde-standard \
-kwin-x11 \
-plasma-workspace \
-plasma-desktop \
-konsole \
+xfce4 \
+xfce4-terminal \
 xvfb \
 x11vnc \
 novnc \
@@ -19,13 +15,25 @@ websockify \
 dbus-x11 \
 autocutsel \
 x11-xserver-utils \
-fastfetch \
+curl \
+gnupg \
 git-lfs
 
-echo "🧠 Verifying installs..."
+# ✅ Install fastfetch
+sudo apt-get install -y fastfetch
 
-command -v Xvfb || (echo "❌ Xvfb missing" && exit 1)
-command -v x11vnc || (echo "❌ x11vnc missing" && exit 1)
-command -v websockify || (echo "❌ websockify missing" && exit 1)
+# ✅ Install Google Chrome
+echo "🌐 Installing Chrome..."
+curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google.gpg
 
-echo "✅ KDE install complete"
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+| sudo tee /etc/apt/sources.list.d/google-chrome.list
+
+sudo apt-get update
+sudo apt-get install -y google-chrome-stable
+echo 'alias chrome="google-chrome --no-sandbox --disable-dev-shm-usage"' >> ~/.bashrc
+
+# ✅ Git LFS setup
+git lfs install
+
+echo "✅ Everything installed"
