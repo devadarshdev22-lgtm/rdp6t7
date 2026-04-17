@@ -1,5 +1,5 @@
 {
-  "name": "Bulletproof Cloud OS",
+  "name": "Windows 11 Cloud OS",
 
   "image": "mcr.microsoft.com/devcontainers/base:debian",
 
@@ -7,13 +7,13 @@
 
   "portsAttributes": {
     "6080": {
-      "label": "Cloud Desktop",
+      "label": "Windows Cloud Desktop",
       "onAutoForward": "openBrowser",
       "visibility": "private"
     }
   },
 
-  "postCreateCommand": "bash .devcontainer/repair.sh && bash .devcontainer/install.sh",
+  "postCreateCommand": "bash .devcontainer/install.sh",
   "postStartCommand": "bash .devcontainer/start.sh",
 
   "remoteUser": "vscode"
