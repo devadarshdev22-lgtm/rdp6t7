@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-export DEBIAN_FRONTEND=noninteractive
+source .devcontainer/env.sh
 
-echo "📦 Installing core system..."
+echo "🧱 Installing Windows-style stable base..."
 
-sudo apt-get update
+sudo apt-get update -y
 
-sudo apt-get install -y \
+sudo apt-get install -y --no-install-recommends \
 xfce4 \
 xfce4-terminal \
 xvfb \
@@ -19,20 +19,24 @@ autocutsel \
 git-lfs \
 wget \
 curl \
-gnupg
+gnupg \
+tzdata \
+keyboard-configuration
 
-# Enable Git LFS
+# 🔥 FORCE CONFIG SKIP (this is key)
+echo "tzdata tzdata/Areas select Etc" | sudo debconf-set-selections
+echo "tzdata tzdata/Zones/Etc select UTC" | sudo debconf-set-selections
+echo "keyboard-configuration keyboard-configuration/layout select English (US)" | sudo debconf-set-selections
+echo "keyboard-configuration keyboard-configuration/variant select English (US)" | sudo debconf-set-selections
+
 git lfs install
 
-echo "🌐 Installing Google Chrome..."
+echo "🌐 Installing Chrome..."
 
 wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb || true
 
-sudo apt install -y ./google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y || true
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ./google-chrome-stable_current_amd64.deb || true
 
 rm -f google-chrome-stable_current_amd64.deb
-
-echo "🧹 Cleaning desktop..."
-rm -rf /home/vscode/Desktop/* || true
 
 echo "✅ Install complete"
