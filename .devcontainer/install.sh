@@ -8,6 +8,7 @@ echo "🧱 Installing Windows-style stable base..."
 sudo apt-get update -y
 
 sudo apt-get install -y --no-install-recommends \
+fastfetch \
 xfce4 \
 xfce4-terminal \
 xvfb \
