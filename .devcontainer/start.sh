@@ -1,52 +1,48 @@
 #!/bin/bash
 set -e
 
+echo "🪟 Starting Cloud Desktop..."
+
 export DISPLAY=:1
 export XDG_RUNTIME_DIR=/tmp/runtime-vscode
 
 mkdir -p $XDG_RUNTIME_DIR
 chmod 700 $XDG_RUNTIME_DIR
 
-echo "🪟 Starting Windows 11 Cloud Desktop..."
-
-# Virtual display
+# Virtual display (must be stable first)
 Xvfb :1 -screen 0 1280x800x24 &
+sleep 3
+
+# Desktop
+dbus-launch --exit-with-session startxfce4 &
+sleep 6
+
+# VNC server (must bind BEFORE websockify)
+x11vnc -display :1 -forever -shared -rfbport 5900 -nopw -quiet &
 sleep 2
 
-# XFCE desktop
-dbus-launch --exit-with-session startxfce4 &
-sleep 5
+# VERIFY noVNC path dynamically (THIS FIXES BLANK PAGE)
+NOVNC_PATH=$(ls /usr/share | grep novnc | head -n 1)
 
-# Clipboard sync
-autocutsel -fork
-autocutsel -selection PRIMARY -fork
+if [ -z "$NOVNC_PATH" ]; then
+  echo "❌ noVNC not found"
+else
+  echo "✅ Using noVNC path: /usr/share/$NOVNC_PATH"
+fi
 
-# VNC
-x11vnc -display :1 -forever -shared -rfbport 5900 -nopw -quiet &
+# Websockify (now safe)
+websockify --web=/usr/share/$NOVNC_PATH 6080 localhost:5900 &
 
-# noVNC
-websockify --web=/usr/share/novnc/ 6080 localhost:5900 &
-
-# 🧠 AUTO FIX LFS EVERY START (important)
-(
-while true; do
-  command -v git-lfs >/dev/null 2>&1 || sudo apt-get install -y git-lfs
-  git lfs install --system --skip-repo || true
-  sleep 60
-done
-) &
-
-# 🖥 AUTO CHROME (Windows default browser vibe)
+# Chrome auto start
 (
 sleep 10
-DISPLAY=:1 google-chrome --no-sandbox https://google.com &
+command -v google-chrome >/dev/null && DISPLAY=:1 google-chrome --no-sandbox https://google.com &
 ) &
 
-# 📊 FASTFETCH (Windows system info style)
+# Fastfetch
 (
-sleep 6
-clear
+sleep 4
 fastfetch || true
 ) &
 
-echo "✅ Windows Cloud OS ready at http://localhost:6080"
+echo "✅ Desktop should now work at port 6080"

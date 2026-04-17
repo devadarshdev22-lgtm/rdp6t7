@@ -1,20 +1,19 @@
 {
-  "name": "Windows 11 Cloud OS",
+  "name": "Windows Cloud OS (Stable)",
 
   "image": "mcr.microsoft.com/devcontainers/base:debian",
+
+  "remoteUser": "vscode",
 
   "forwardPorts": [6080],
 
   "portsAttributes": {
     "6080": {
-      "label": "Windows Cloud Desktop",
-      "onAutoForward": "openBrowser",
-      "visibility": "private"
+      "label": "Desktop (noVNC)",
+      "onAutoForward": "openBrowser"
     }
   },
 
   "postCreateCommand": "bash .devcontainer/install.sh",
-  "postStartCommand": "bash .devcontainer/start.sh",
-
-  "remoteUser": "vscode"
+  "postStartCommand": "bash .devcontainer/start.sh"
 }
