@@ -16,7 +16,9 @@
     }
   },
 
-  "postCreateCommand": "apt-get update && apt-get install -y kde-standard kde-terminal xvfb x11vnc novnc websockify dbus-x11 && chmod +x .devcontainer/start.sh",
+  "postCreateCommand": "apt-get update && apt-get install -y kde-standard kde-terminal xvfb x11vnc novnc websockify dbus-x11 autocutsel && chmod +x .devcontainer/start.sh",
+
+  "postStartCommand": ".devcontainer/start.sh",
 
   "remoteUser": "vscode"
 }
