@@ -11,9 +11,8 @@
 
   "portsAttributes": {
     "6080": {
-      "label": "XFCE (noVNC)",
-      "onAutoForward": "openBrowser",
-      "visibility": "public"
+      "label": "KDE Desktop (noVNC)",
+      "onAutoForward": "openBrowser"
     }
   },
 
