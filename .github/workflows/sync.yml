@@ -15,15 +15,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug token (safe check)
+        env:
+          TOKEN: ${{ secrets.REPO_TOKEN }}
+        run: |
+          echo "Token length: ${#TOKEN}"
+
       - name: Push to destination repository
         env:
           DEST_REPO: "devadarshdev22-lgtm/rdp6t7"
           TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
+          set -e
+
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          git remote remove destination 2>/dev/null || true
+          git remote remove destination || true
+
           git remote add destination https://x-access-token:${TOKEN}@github.com/${DEST_REPO}.git
 
           git push destination main --force
