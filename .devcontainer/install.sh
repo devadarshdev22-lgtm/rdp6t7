@@ -7,28 +7,25 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US:en
 export LC_ALL=en_US.UTF-8
 
-#!/bin/bash
-echo "📦 Installing XFCE Desktop..."
-
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
-    xfce4 \
-    xfce4-goodies \
+    openbox \
     xvfb \
     x11vnc \
     novnc \
-    dbus-x11 \
     websockify \
-    curl
+    dbus-x11 \
+    xterm \
+    curl \
+    ca-certificates
 
-echo "✅ XFCE Installed"
+# Install Chrome (The 'Clean' Way)
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/googlechrome-linux.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+sudo apt-get update && sudo apt-get install -y google-chrome-stable
 
 # Install Fastfetch & Chrome as you had them
 sudo apt-get install -y fastfetch
-
-# ✅ Install Google Chrome
-echo "🌐 Installing Chrome..."
-curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google.gpg
 
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
 | sudo tee /etc/apt/sources.list.d/google-chrome.list
