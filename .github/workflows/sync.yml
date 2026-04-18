@@ -3,7 +3,7 @@ name: Sync
 on:
   push:
     branches:
-      - main  # Set this to the branch you want to sync
+      - main
 
 jobs:
   repo-sync:
@@ -17,12 +17,13 @@ jobs:
 
       - name: Push to destination repository
         env:
-          DEST_REPO: "devadarsh22-lgtm/rdp6t7"
+          DEST_REPO: "devadarshdev22-lgtm/rdp6t7"
           TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          git remote remove destination || true
           git remote add destination "https://${TOKEN}@github.com/${DEST_REPO}.git"
 
           git push destination main --force
