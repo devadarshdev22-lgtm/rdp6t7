@@ -11,16 +11,19 @@
 
   "portsAttributes": {
     "6080": {
-      "label": "KDE Desktop (noVNC)",
-      "onAutoForward": "openBrowser"
+      "label": "XFCE (noVNC)",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
     }
   },
 
   "postCreateCommand": "bash .devcontainer/install.sh || true",
 
   "postStartCommand": "bash .devcontainer/start.sh",
+
   "remoteUser": "vscode",
+
   "runArgs": [
     "--shm-size=2gb"
-]
+  ]
 }
