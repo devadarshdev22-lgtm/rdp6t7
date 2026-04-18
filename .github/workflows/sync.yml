@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Verify token exists
+      - name: Verify token
         env:
           TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           if [ -z "$TOKEN" ]; then
-            echo "❌ REPO_TOKEN is missing or empty"
+            echo "❌ Token missing"
             exit 1
           fi
-          echo "✅ Token loaded successfully"
+          echo "✅ Token loaded"
 
-      - name: Configure git and push
+      - name: Sync repo
         env:
           DEST_REPO: "devadarshdev22-lgtm/rdp6t7"
           TOKEN: ${{ secrets.REPO_TOKEN }}
@@ -35,11 +35,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Force clean remote
           git remote remove destination 2>/dev/null || true
 
-          # IMPORTANT: correct auth format
           git remote add destination "https://x-access-token:${TOKEN}@github.com/${DEST_REPO}.git"
 
-          echo "🚀 Pushing to destination..."
           git push destination main --force
