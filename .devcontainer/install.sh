@@ -17,6 +17,7 @@ sudo apt-get install -y --no-install-recommends \
     xvfb \
     x11vnc \
     novnc \
+    dbus-x11 \
     websockify \
     curl
 
