@@ -11,7 +11,7 @@
 
   "portsAttributes": {
     "6080": {
-      "label": "KDE Desktop (noVNC)",
+      "label": "noVNC Desktop",
       "onAutoForward": "openBrowser",
       "visibility": "public"
     }
@@ -19,7 +19,7 @@
 
   "postCreateCommand": "bash .devcontainer/install.sh || true",
 
-  "postStartCommand": "bash .devcontainer/start.sh",
+  "postStartCommand": "sleep 3 && bash .devcontainer/start.sh",
 
   "remoteUser": "vscode",
 

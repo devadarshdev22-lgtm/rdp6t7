@@ -1,37 +1,56 @@
 #!/bin/bash
-export DISPLAY=:0
+
+# Avoid Codespaces race condition
+sleep 2
+
+export DISPLAY=:1
 export XDG_RUNTIME_DIR=/tmp/runtime-vscode
+
 mkdir -p $XDG_RUNTIME_DIR
 chmod 700 $XDG_RUNTIME_DIR
 
-# 1. HARD CLEANUP - Force kill everything before starting
-sudo killall -9 Xvfb x11vnc websockify openbox google-chrome-stable 2>/dev/null
-sudo rm -f /tmp/.X1-lock
-sudo rm -rf /tmp/.X11-unix/X1
+# ✅ CRITICAL FIX: X11 socket dir must exist
+sudo mkdir -p /tmp/.X11-unix
+sudo chmod 1777 /tmp/.X11-unix
 
-# 2. START VIRTUAL DISPLAY (Lower depth = Much higher speed)
-# Using 16-bit color depth (x16) instead of 24-bit makes it 40% faster.
-Xvfb :0 -screen 0 1366x768x16 +extension RANDR +extension RENDER +extension GLX &
+# Clean old processes safely
+pkill -9 Xvfb x11vnc websockify openbox google-chrome-stable 2>/dev/null || true
+
+rm -f /tmp/.X1-lock
+rm -rf /tmp/.X11-unix/X1
+
+# Start virtual display
+Xvfb :1 -screen 0 1366x768x16 \
+  +extension RANDR +extension RENDER +extension GLX \
+  > /tmp/xvfb.log 2>&1 &
 sleep 2
 
-# 3. START WINDOW MANAGER (Openbox is tiny and fast)
-dbus-launch openbox &
+# Window manager
+dbus-launch openbox > /tmp/openbox.log 2>&1 &
 sleep 1
 
-# 4. START VNC (Optimized flags for lag)
-# -ncache 10 caches pixels on your side to reduce internet lag
-# -noxdamage stops redundant screen refreshes
-x11vnc -display :0 -forever -nopw -shared -rfbport 5900 -noxdamage -ncache 10 &
+# VNC server
+x11vnc -display :1 \
+  -forever -nopw -shared \
+  -rfbport 5900 \
+  -noxdamage -ncache 10 \
+  > /tmp/x11vnc.log 2>&1 &
 
-# 5. START WEB BRIDGE
-websockify --web=/usr/share/novnc 6080 localhost:5900 &
+# Web VNC bridge
+websockify --web=/usr/share/novnc 6080 localhost:5900 \
+  > /tmp/websockify.log 2>&1 &
 
-# 6. START CHROME (Maximized and fast)
+# Launch Chrome
 (
   sleep 3
-  google-chrome-stable --no-sandbox --disable-dev-shm-usage \
-    --disable-gpu --disable-software-rasterizer \
-    --start-maximized --no-first-run https://google.com
+  DISPLAY=:1 google-chrome-stable \
+    --no-sandbox \
+    --disable-dev-shm-usage \
+    --disable-gpu \
+    --disable-software-rasterizer \
+    --start-maximized \
+    --no-first-run \
+    https://google.com
 ) &
 
-echo "🚀 Super-Lightweight VNC Started!"
+echo "🚀 VNC is running at http://localhost:6080"
