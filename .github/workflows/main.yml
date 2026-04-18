@@ -1,0 +1,11 @@
+name: Restart
+
+on:
+  workflow_dispatch:
+
+jobs:
+  restart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run restart script
+        run: bash vm.sh
