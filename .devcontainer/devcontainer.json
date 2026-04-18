@@ -1,5 +1,5 @@
 {
-  "name": "XFCE (noVNC)",
+  "name": "KasmVNC Desktop",
   "image": "mcr.microsoft.com/devcontainers/base:debian",
 
   "features": {
@@ -11,7 +11,7 @@
 
   "portsAttributes": {
     "6080": {
-      "label": "noVNC Desktop",
+      "label": "Kasm Desktop",
       "onAutoForward": "openBrowser",
       "visibility": "public"
     }
@@ -22,8 +22,5 @@
   "postStartCommand": "sleep 3 && bash .devcontainer/start.sh",
 
   "remoteUser": "vscode",
-
-  "runArgs": [
-    "--shm-size=2gb"
-  ]
+  "runArgs": ["--shm-size=2gb"]
 }
